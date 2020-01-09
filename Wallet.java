@@ -42,7 +42,7 @@ public class Wallet {
 		return total;
 	}
 	
-	public Transaction send(String destinataire,float value ) {
+	public Transaction send(String destinataire,int value ) {
 		if(getSolde() < value) {
 			System.out.println("Fonds insuffisants. Transaction Refuse.");
 			return null;

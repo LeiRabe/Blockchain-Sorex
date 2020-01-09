@@ -1,14 +1,19 @@
+import java.io.Serializable;
 import java.security.*;
 import java.util.*;
 
-public class Bloc {
-    public int numero;
+public class Bloc implements Serializable {
+    /**
+	 * serialisation de l'objet afin de pouvoir le passer dans un socket
+	 */
+	private static final long serialVersionUID = 7036861022355009625L;//code de hachage de cet objet Bloc
+	public int numero;
     public long timestamp;
     public String currentHash;
     public String precHash;
 	public String data;
 	public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-    public int nonce;
+	public int nonce;
 	
     public Bloc(int numero, String precHash, ArrayList<Transaction> transactions) {
         this.numero = numero;
@@ -57,5 +62,7 @@ public class Bloc {
 		s = s +    "Nonce        : " + nonce + "\r\n"; 
         s = s +    "Hash  : " +currentHash + "\r\n";
     return s;
-    }		
+	}		
+	
+	//public static Bloc 
 }
