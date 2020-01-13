@@ -1,27 +1,33 @@
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server {
-    public static void main(String[] args) throws Exception {
+    static ArrayList<Socket> Socketclients = new ArrayList<Socket>();//store all the connected clients so that we can 
+    //send blocs/transactions to each connected clients
 
+    public static void main(String[] args) throws Exception {
         ServerSocket server = null;
+
         try {
             server = new ServerSocket(3200);
             server.setReuseAddress(true);
             while (true) {
                 Socket client = server.accept();
                 System.out.println("New client connected " + client.getInetAddress().getHostAddress());
+                Socketclients.add(client);//add all connected clients' ip to the arrayList
 
-                ClientHandler clientSock = new ClientHandler(client);
+                ClientFileHandler clientFile = new ClientFileHandler(client);
+                new Thread(clientFile).start();//chaque nouvelle connexion(client) sera pris en charge par un thread
 
-                new Thread(clientSock).start();//chaque nouvelle connexion(client) sera pris en charge par un thread
+                ClientTransactionHandler clientTransaction = new ClientTransactionHandler(client);
+                new Thread(clientTransaction).start();//en arrière plan: server get transactions and send them to connected clients
+
+                ClientBlocHandler clientBlocHandler = new ClientBlocHandler(client);
+                new Thread(clientBlocHandler).start();//en arrière plan: server get blocs and send them to connected clients
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,13 +42,113 @@ public class Server {
         }
     }
 
-    // todo: receive transaction and broadcast it to the connected client (thread)
     
-    private static class ClientHandler implements Runnable { //receive file and send it to the destination
+    /**
+     * receive transaction and broadcast it to the connected client (thread)
+    */
+    private static class ClientTransactionHandler implements Runnable{
+
+        private final Socket s;
+        public static Transaction transaction; 
+
+        public ClientTransactionHandler(Socket socket){
+            this.s = socket;
+        }
+
+        @Override
+        public void run() { //get and send the transaction to all connected clients
+            InputStream is = null;
+            ObjectInputStream ois = null;
+            try{
+                is = s.getInputStream();
+                ois = new ObjectInputStream(is);
+                transaction = (Transaction)ois.readObject();//get the transaction
+                SendTransaction(Socketclients, transaction);//send the transaction to all connected clients
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        
+    }
+
+    /** 
+     * Send the transaction to connected clients 
+     * @param clients
+     * @param t
+    */
+    public static void SendTransaction(ArrayList<Socket> clients, Transaction t){
+        OutputStream os = null;
+        ObjectOutputStream ob = null;
+        for ( Socket c : clients) {
+            try{
+                os = c.getOutputStream();
+                ob = new ObjectOutputStream(os);
+                ob.writeObject(t);//send the transaction to all the connected clients
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private static class ClientBlocHandler implements Runnable{
+
+        private final Socket cliSocket;
+        public static Bloc bloc; 
+
+        public ClientBlocHandler(Socket socket) {
+            this.cliSocket = socket;
+        }
+
+        @Override
+        public void run() {
+            InputStream is = null;
+            ObjectInputStream ois = null;
+            try{
+                is = cliSocket.getInputStream();
+                ois = new ObjectInputStream(is);
+                bloc = (Bloc)ois.readObject();//get the bloc
+                SendBloc(Socketclients, bloc);//send the bloc to all connected clients
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        
+    }
+
+    /**
+     * Send the bloc to connected clients
+     * @param clients
+     * @param b
+     */
+    public static void SendBloc(ArrayList<Socket> clients, Bloc b){
+        OutputStream os = null;
+        ObjectOutputStream ob = null;
+        for ( Socket c : clients) {
+            try{
+                os = c.getOutputStream();
+                ob = new ObjectOutputStream(os);
+                ob.writeObject(b);//send the transaction to all the connected clients
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    
+    /**
+     * receive file and send it to the destination
+     *
+     */
+    private static class ClientFileHandler implements Runnable { 
 
         private final Socket clientSocket;
 
-        public ClientHandler(Socket socket) { 
+        public ClientFileHandler(Socket socket) { 
             this.clientSocket = socket;
         }
 

@@ -78,6 +78,7 @@ public class Client {
                         b = new Bloc(cpt, blockChain.get(cpt-1).currentHash, transactions);
                     }
                     sendTransactionServer(t);//send transaction
+                    sendBlocServer(b);//send the
 
                 }
                   
@@ -106,8 +107,6 @@ public class Client {
             OutputStream os = socket.getOutputStream();
             ObjectOutputStream ob = new ObjectOutputStream(os);
             ob.writeObject(t);//send transaction
-            os.close();
-            ob.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,16 +121,15 @@ public class Client {
         try {
             OutputStream os = socket.getOutputStream();
             ObjectOutputStream ob = new ObjectOutputStream(os);
-            ob.writeObject(b);//send transaction
-            os.close();
-            ob.close();
+            ob.writeObject(b);//send bloc
+            blockChain.add(b);// add the sent block to the blockChain
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * get transactions from the sender trough the server
+     * retrieve transactions from the serer
      * 
      */
     public static void getTransaction(){
@@ -146,7 +144,7 @@ public class Client {
     }
 
     /**
-     * get bloc from the server
+     * retrieve bloc from the server
      */
     public static void getBloc(){
         try{
@@ -172,7 +170,7 @@ public class Client {
             fo.write(buff,0,buff.length);
             
         } catch (Exception e) {
-            //TODO: handle exception
+            e.printStackTrace();
         }
     }
 
