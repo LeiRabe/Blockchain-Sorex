@@ -7,10 +7,10 @@ import java.util.Scanner;
 public class Client {
     
     static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-    static ArrayList<Bloc> blocs = new ArrayList<Bloc>();
+    static ArrayList<Bloc> blockChain = new ArrayList<Bloc>();
     String idClient;
     static String host = "127.0.0.1";
-    static int port = 8080;
+    static int port = 3200;
     static Socket socket = null;//client socket 
     static Transaction transaction;
     static Bloc bloc; 
@@ -24,6 +24,8 @@ public class Client {
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
         long length = 0L; 
+        Bloc b;
+        int cpt = 0; 
 
         idClient += "upmc";
 
@@ -51,6 +53,7 @@ public class Client {
                     destID = scanner.next();
                     System.out.println("Input the file path: ");
 
+                    // todo : a finir, la partie server qui reçoit le fichier et le diffuse
                     /* begining send file*/
                     filePath = scanner.next();
                     File f = new File(filePath);
@@ -61,10 +64,21 @@ public class Client {
                     bos.write(buffer); 
                     /*end of sending file*/
 
-                    
+                    /*Create the transaction and the related bloc and send it to the server*/
+                    Transaction t = new Transaction(idClient, destID, f.hashCode());
+                    transactions.add(t);//add the new transaction into the array of transactions
+                    if(blockChain.isEmpty()){
+                        b = new Bloc(0, null, transactions);
+                    }
+                    else {
 
-                    Transaction t = new Transaction(idClient, destID, filePath.hashCode());
-                    sendTransactionServer(t);
+                        for (Bloc bloc : blockChain) {
+                            cpt++;//count the number of bloc in the blockchain
+                        }
+                        b = new Bloc(cpt, blockChain.get(cpt-1).currentHash, transactions);
+                    }
+                    sendTransactionServer(t);//send transaction
+
                 }
                   
             }
@@ -76,7 +90,7 @@ public class Client {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         Client client = new Client();
 
@@ -91,7 +105,24 @@ public class Client {
         try {
             OutputStream os = socket.getOutputStream();
             ObjectOutputStream ob = new ObjectOutputStream(os);
-            ob.writeObject(t);
+            ob.writeObject(t);//send transaction
+            os.close();
+            ob.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * send the related bloc to the server
+     * @param b
+     */
+
+    public static void sendBlocServer(Bloc b){
+        try {
+            OutputStream os = socket.getOutputStream();
+            ObjectOutputStream ob = new ObjectOutputStream(os);
+            ob.writeObject(b);//send transaction
             os.close();
             ob.close();
         } catch (Exception e) {
@@ -122,10 +153,26 @@ public class Client {
             InputStream in = socket.getInputStream();
             ObjectInputStream ois = new ObjectInputStream(in);
             bloc = (Bloc)ois.readObject();
-            blocs.add(bloc);
+            blockChain.add(bloc);
         }
         catch (Exception exception){
             exception.printStackTrace();
+        }
+    }
+
+    /**
+     * get the related file from server
+    */
+    public static void getFile(){
+        try {
+            byte [] buff = new byte[65535];
+            InputStream in = socket.getInputStream();
+            FileOutputStream fo = new FileOutputStream("fichierTest.txt");
+            in.read(buff,0,buff.length);
+            fo.write(buff,0,buff.length);
+            
+        } catch (Exception e) {
+            //TODO: handle exception
         }
     }
 

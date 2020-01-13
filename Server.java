@@ -9,15 +9,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         ServerSocket server = null;
         try {
-            server = new ServerSocket(8080);
+            server = new ServerSocket(3200);
             server.setReuseAddress(true);
             while (true) {
                 Socket client = server.accept();
                 System.out.println("New client connected " + client.getInetAddress().getHostAddress());
+
                 ClientHandler clientSock = new ClientHandler(client);
 
                 new Thread(clientSock).start();//chaque nouvelle connexion(client) sera pris en charge par un thread
@@ -35,7 +36,8 @@ public class Server {
         }
     }
 
-    //:TODO
+    // todo: receive transaction and broadcast it to the connected client (thread)
+    
     private static class ClientHandler implements Runnable { //receive file and send it to the destination
 
         private final Socket clientSocket;

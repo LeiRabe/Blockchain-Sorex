@@ -14,6 +14,7 @@ public class Bloc implements Serializable {
 	public String data;
 	public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 	public int nonce;
+	public int fileHash;
 	
     public Bloc(int numero, String precHash, ArrayList<Transaction> transactions) {
         this.numero = numero;
@@ -21,7 +22,8 @@ public class Bloc implements Serializable {
         this.precHash = precHash;
         this.transactions = transactions;
         nonce = 0;
-        currentHash = calculateHash();
+		currentHash = calculateHash();
+		this.fileHash = fileHash;//hash du file envoyé
     }
     public String calculateHash(){
 		try {
