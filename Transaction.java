@@ -1,7 +1,7 @@
 import java.security.*;
 import java.util.*;
 
-public class Transaction {
+public class Transaction implements java.io.Serializable {
 	public String emetteur;
 	public String destinataire;
 	public float value; 

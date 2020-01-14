@@ -1,7 +1,7 @@
 import java.security.*;
 import java.util.*;
 
-public class Bloc {
+public class Bloc implements java.io.Serializable{
     public int numero;
     public long timestamp;
     public String currentHash;
