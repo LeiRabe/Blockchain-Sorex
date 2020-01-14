@@ -2,12 +2,8 @@ import java.io.Serializable;
 import java.security.*;
 import java.util.*;
 
-public class Bloc implements Serializable {
-    /**
-	 * serialisation de l'objet afin de pouvoir le passer dans un socket
-	 */
-	private static final long serialVersionUID = 7036861022355009625L;//code de hachage de cet objet Bloc
-	public int numero;
+public class Bloc implements java.io.Serializable{
+    public int numero;
     public long timestamp;
     public String currentHash;
     public String precHash;

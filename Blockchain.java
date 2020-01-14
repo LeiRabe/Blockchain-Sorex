@@ -25,6 +25,12 @@ public class Blockchain {
 		
 		Bloc b = new Bloc(0, null, transactions);
         b.mineBlock(difficulte);
+		TCPClient client = null;
+		try{
+			client= new TCPClient("alex", "localhost", b);
+		}catch(Exception e){
+			System.exit(2);
+		}
         blockchain.add(b);
 		System.out.println("Wallet A Solde: " + A.getSolde() + " euros");
 		System.out.println("Wallet B Solde: " + B.getSolde() + " euros");
