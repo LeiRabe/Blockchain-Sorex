@@ -6,7 +6,12 @@ public class Blockchain {
 	public static ArrayList<Bloc> blockchain = new ArrayList<Bloc>();
 	public static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 	public static int difficulte = 5;
+	public static int cpt = 0;
 
+
+	public static void setBlockchain(Bloc b){
+		blockchain.add(b);
+	}
 	public static void main(String[] args) {
 	    Wallet A = new Wallet(blockchain);
 	    Wallet B = new Wallet(blockchain);
@@ -38,8 +43,8 @@ public class Blockchain {
 		
 		for (Bloc blo : blockchain) {
 			System.out.println(blo+"\n");
+			cpt ++; 
 		}
-
 		
 
 	}

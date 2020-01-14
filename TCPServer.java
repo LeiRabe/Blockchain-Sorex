@@ -56,13 +56,13 @@ class UserChannelInfo implements Runnable
 	private int errors = 0;
 	public UserChannelInfo(Socket socket, ConcurrentLinkedQueue<SimpleTextMessage> messageQueue) throws IOException, ClassNotFoundException
 	{
+		
 		this.socket = socket;
 		this.output = new ObjectOutputStream(socket.getOutputStream());
 		this.input = new ObjectInputStream(socket.getInputStream());
 		this.name = (String) (this.input.readObject());
 		this.messageQueue = messageQueue;
-		this.messageQueue.add(new SimpleTextMessage("System", this.name+" joined.",null));
-	}
+		this.messageQueue.add(new SimpleTextMessage("System", this.name+" joined.",null));	}
 	
 	public void run()
 	{
@@ -75,7 +75,9 @@ class UserChannelInfo implements Runnable
 			}
 			try{
 				String mesg = (String)input.readObject();
-				Bloc bloc = (Bloc)input.readObject();
+				Bloc bloc = (Bloc)input.readObject();//recevoir le bloc venant du client
+				this.output.writeObject(bloc);//envoyer aux clients connectés
+				Blockchain.setBlockchain(bloc);//ajouter les blocs dans la blockchain
 
 				if(mesg.startsWith("END")){
 					//message de fin pour fermer le tunnel
