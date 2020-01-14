@@ -6,6 +6,11 @@ public class Blockchain {
 	public static ArrayList<Bloc> blockchain = new ArrayList<Bloc>();
 	public static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 	public static int difficulte = 5;
+	public static int nbBloc = 0;
+
+	public ArrayList<Bloc> getBlockchainArray(){
+		return Blockchain.blockchain;
+	}
 
 	public static void main(String[] args) {
 	    Wallet A = new Wallet(blockchain);
@@ -35,10 +40,12 @@ public class Blockchain {
 		System.out.println("Wallet A Solde: " + A.getSolde() + " euros");
 		System.out.println("Wallet B Solde: " + B.getSolde() + " euros");
 		System.out.println("Blockchain Valide : " + ValideChaine(blockchain));
-		
+		client.getBlocs(new Blockchain());//get the client bloc and add them into the arrayList of bloc
 		for (Bloc blo : blockchain) {
 			System.out.println(blo+"\n");
+			nbBloc ++;
 		}
+		System.out.println("Nombre bloc dans la blockchain: " +nbBloc);
 
 		
 
