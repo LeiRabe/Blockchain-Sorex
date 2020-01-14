@@ -51,7 +51,7 @@ public class TCPClient {
         }
     }
 
-    public void getBlocs(Blockchain blockchain) {
+    /*public void getBlocs(Blockchain blockchain) {
         Bloc b = null;
         try {
             b = (Bloc) in.readObject();//récupérér les blocs
@@ -60,7 +60,7 @@ public class TCPClient {
         }
         ArrayList<Bloc> bloclist = blockchain.getBlockchainArray();
         bloclist.add(b);//add the retrieved bloc to the array of bloc in the Blockchain class
-    }
+    }*/
 
 
     class MessageManagerTCP_x implements Runnable
@@ -91,7 +91,8 @@ public class TCPClient {
                         System.out.println("Message recu");
                         System.out.println(m.getSenderName()+"] "+ m.getMessage()+"\n");
                         b = m.getBloc();
-                        out.writeObject(b);//send the bloc to the server
+                        setBlockchain(b);
+                        
                     }
                 }catch(Exception e){
                     errors++;

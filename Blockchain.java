@@ -8,8 +8,8 @@ public class Blockchain {
 	public static int difficulte = 5;
 	public static int nbBloc = 0;
 
-	public ArrayList<Bloc> getBlockchainArray(){
-		return Blockchain.blockchain;
+	public void setBlockchain(Bloc b){
+		blockchain.add(b);
 	}
 
 	public static void main(String[] args) {
