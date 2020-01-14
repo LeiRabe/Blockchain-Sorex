@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.security.*;
 import java.util.*;
 
@@ -8,7 +9,7 @@ public class Bloc implements java.io.Serializable{
     public String precHash;
 	public String data;
 	public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-    public int nonce;
+	public int nonce;
 	
     public Bloc(int numero, String precHash, ArrayList<Transaction> transactions) {
         this.numero = numero;
@@ -57,5 +58,7 @@ public class Bloc implements java.io.Serializable{
 		s = s +    "Nonce        : " + nonce + "\r\n"; 
         s = s +    "Hash  : " +currentHash + "\r\n";
     return s;
-    }		
+	}		
+	
+	//public static Bloc 
 }

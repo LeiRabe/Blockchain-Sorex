@@ -34,7 +34,13 @@ public class Blockchain {
         blockchain.add(b);
 		System.out.println("Wallet A Solde: " + A.getSolde() + " euros");
 		System.out.println("Wallet B Solde: " + B.getSolde() + " euros");
-        System.out.println("Blockchain Valide : " + ValideChaine(blockchain));
+		System.out.println("Blockchain Valide : " + ValideChaine(blockchain));
+		
+		for (Bloc blo : blockchain) {
+			System.out.println(blo+"\n");
+		}
+
+		
 
 	}
 	public static boolean ValideChaine(ArrayList<Bloc> blockchain) {
