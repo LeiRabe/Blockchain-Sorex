@@ -12,6 +12,18 @@ public class Blockchain {
 	public static void setBlockchain(Bloc b){
 		blockchain.add(b);
 	}
+
+	public static Bloc createBloc(ArrayList<Transaction> transactions){
+		Bloc b = null;
+		if(blockchain.isEmpty()){
+			b = new Bloc(0, null, transactions);
+		}
+		else{
+			b = new Bloc(blockchain.get(blockchain.size()-1).numero+1,blockchain.get(blockchain.size()-1).currentHash, transactions);
+		}
+		return b;
+	}
+
 	public static void main(String[] args) {
 	    Wallet A = new Wallet(blockchain);
 	    Wallet B = new Wallet(blockchain);
@@ -31,6 +43,7 @@ public class Blockchain {
 		Bloc b = new Bloc(0, null, transactions);
         b.mineBlock(difficulte);
 		TCPClient client = null;
+		Bloc c = createBloc(transactions);
 		try{
 			client= new TCPClient("alex", "localhost", b); 
 		}catch(Exception e){
@@ -40,10 +53,9 @@ public class Blockchain {
 		System.out.println("Wallet A Solde: " + A.getSolde() + " euros");
 		System.out.println("Wallet B Solde: " + B.getSolde() + " euros");
 		System.out.println("Blockchain Valide : " + ValideChaine(blockchain));
-		
+
 		for (Bloc blo : blockchain) {
 			System.out.println(blo+"\n");
-			cpt ++; 
 		}
 		System.out.println("Nombre de bloc dans la liste: " +cpt);
 		
