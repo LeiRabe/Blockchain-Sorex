@@ -11,6 +11,7 @@ public class TCPClient {
     private static int port = 8888;
     public ArrayList<Bloc> stockBlocs = new ArrayList<Bloc>();// store in the client the block sent by the server
 
+
     public TCPClient(String name, String ip, Bloc bloc) throws Exception {
         // super(name);
         Socket socket = new Socket(ip, port);
