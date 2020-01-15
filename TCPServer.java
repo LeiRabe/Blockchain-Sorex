@@ -76,8 +76,8 @@ class UserChannelInfo implements Runnable
 			try{
 				String mesg = (String)input.readObject();
 				Bloc bloc = (Bloc)input.readObject();//recevoir le bloc venant du client
-				this.output.writeObject(bloc);//envoyer aux clients connectés
-				Blockchain.setBlockchain(bloc);//ajouter les blocs dans la blockchain
+				//this.output.writeObject(bloc);//envoyer aux clients connectés
+				//Blockchain.setBlockchain(bloc);//ajouter les blocs dans la blockchain
 
 				if(mesg.startsWith("END")){
 					//message de fin pour fermer le tunnel
