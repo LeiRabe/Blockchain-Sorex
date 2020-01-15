@@ -1,17 +1,18 @@
 import java.net.Socket;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-public class TCPClient
-{
+
+public class TCPClient {
     private ObjectOutputStream out;
     private ObjectInputStream in;
-	private static int port = 8888;
+    private static int port = 8888;
+    public ArrayList<Bloc> stockBlocs = new ArrayList<Bloc>();// store in the client the block sent by the server
 
-    public TCPClient(String name, String ip, Bloc bloc) throws Exception
-    {
-      //  super(name);
+    public TCPClient(String name, String ip, Bloc bloc) throws Exception {
+        // super(name);
         Socket socket = new Socket(ip, port);
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
@@ -20,29 +21,37 @@ public class TCPClient
         message(bloc);
         Thread t = new Thread(messenger);
         t.start();
-        //ne pas zapper de close
+        // ne pas zapper de close
     }
 
-    public void message(Bloc b){
+    public void message(Bloc b) {
         this.sendBlock(b);
     }
 
-    protected void sendMessage(String mesg)
-    {
-        try{
+    protected void sendMessage(String mesg) {
+        try {
             this.out.writeObject(mesg);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected void sendBlock(Bloc b)
-    {
-        try{
+    protected void sendBlock(Bloc b) {
+        try {
             this.out.writeObject(b);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected void getBloc() {
+        Bloc b = null;
+        try {
+            b = (Bloc) in.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+        stockBlocs.add(b);
     }
 
 
@@ -71,6 +80,7 @@ public class TCPClient
                     }else{
                         System.out.println("Message recu");
                         System.out.println(m.getSenderName()+"] "+ m.getMessage()+"\n");
+			Blockchain.setBlockchain(m.getBloc());
                     }
                 }catch(Exception e){
                     errors++;
