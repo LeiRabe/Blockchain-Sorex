@@ -80,6 +80,7 @@ public class TCPClient {
                     }else{
                         System.out.println("Message recu");
                         System.out.println(m.getSenderName()+"] "+ m.getMessage()+"\n");
+			Blockchain.setBlockchain(m.getBloc());
                     }
                 }catch(Exception e){
                     errors++;
