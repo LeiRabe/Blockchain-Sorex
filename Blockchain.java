@@ -32,7 +32,7 @@ public class Blockchain {
         b.mineBlock(difficulte);
 		TCPClient client = null;
 		try{
-			client= new TCPClient("alex", "localhost", b);
+			client= new TCPClient("alex", "localhost", b); 
 		}catch(Exception e){
 			System.exit(2);
 		}
@@ -45,6 +45,7 @@ public class Blockchain {
 			System.out.println(blo+"\n");
 			cpt ++; 
 		}
+		System.out.println("Nombre de bloc dans la liste: " +cpt);
 		
 
 	}
